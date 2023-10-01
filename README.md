@@ -24,3 +24,42 @@ Demonstrate your ability to deploy an application to an EC2 instance.
 
 ## Deployment instructions Link:
 -  Link to instructions: https://github.com/kura-labs-org/c4_deployment-4/blob/main/Deployment-instructions.md
+
+
+
+
+## 🧐 Purpose 
+Write about 1-2 paragraphs describing the purpose of your project.
+
+### Prerequisites
+What things you need to install the software and how to install them.
+
+```
+Give examples
+```
+
+### Steps
+A step by step series of examples that tell you how to get a development env running.
+
+Say what the step will be
+
+```
+Give the example
+```
+
+And repeat
+
+```
+until finished
+```
+
+End with an example of getting some data out of the system or using it for a little demo.
+
+## 🔧 Issues
+Explain how to run the automated tests for this system.
+
+
+## 🎉 Optimization
+- Hat tip to anyone whose code was used
+- Inspiration
+- References
