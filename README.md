@@ -20,11 +20,12 @@ Nginx will be used as the web server (previous builds used AWS Elastic Beanstalk
 - `images/` Folder housing deployment artifacts
 
 (After EC2 is configured)
-Install "python3.10-venv"
-Install "python-pip"
-Install "python3-pip"
-Install ngnix
-Install "git-all"
+- Install "python3.10-venv"
+- Install "python-pip"
+- Install "python3-pip"
+- Install ngnix
+- Install "git-all"
+- clone the remote repo
 ```
 
 ### Steps
@@ -32,39 +33,128 @@ Install "git-all"
 Step 1. Configure VPC
 
 ```
-Select "VPC and more"
-Select two Availability zones
-Select two public subnets
-Select two private subnets 
+- Select "VPC and more"
+- Select two Availability zones
+- Select two public subnets
+- Select two private subnets 
 ```
 
 Step 2. Configure EC2
 
 ```
-t.2 medium
-Attach to VPC
-configure security groups ports(22,80,8080,8000)
+- t.2 medium
+- Attach to VPC
+- configure security groups ports(22,80,8080,8000)
 ```
-Step 3. Clone Repo
+Step 3. Install Jenkins
 
 ```
-`mkdir "folder"`
-`git clone "URL Link" - Remote repo link to copy
-cd folder/`
-`cd .git`
-`nano config` - Paste your new repo link after "url ="
-``cd ..``
-`git config --global user.name "Your Name"`
-`git config --global user.email "[your@email.com](mailto:your@email.com)"`
-`git push`
+- Install the Pipeline Keep Running Step plugin. This plugin will keep the build process running after the build has been completed.
+- Setup "Multibranch pipeline"
+- Connect to GitHub
+```
+Step 4. Clone Repo
 
 ```
+- `mkdir "folder"`
+- `git clone "URL Link" - Remote repo link to copy
+- cd folder/`
+- `cd .git`
+- `nano config` - Paste your new repo link after "url ="
+- ``cd ..``
+- `git config --global user.name "Your Name"`
+- `git config --global user.email "[your@email.com](mailto:your@email.com)"`
+- `git push`
 
-End with an example of getting some data out of the system or using it for a little demo.
+```
+Step 5. Configure CloudWatch
+
+```
+- Wget https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+- sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
+- cd /opt/aws/amazon-cloudwatch-agent/bin/
+- sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-config-wizard
+- Select the current working instance:
+   > Actions>Security>Modify IAM role>CloudWatchAgentServer Role
+```
+Step 6. Update Nginx Configuration
+
+After ngnix has been installed configure the listening port for 80 to 5000. Run the following to edit `sudo nano /etc/nginx/sites-enabled/default`
+~~~
+
+server {
+    listen 5000 default_server;
+    listen [::]:5000 default_server;
+    # We changed the port from 80 to 5000
+
+    # Also scroll down to where you see “location” and replace it with the text below:
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+~~~
+
+Step 7. Update Jenkins Pipeline file
+- Update the jenkinsfile with new stages for pipeline build
+`pipeline {
+agent any
+stages {
+stage ('Build') {
+steps {
+sh '''#!/bin/bash
+python3 -m venv test3
+source test3/bin/activate
+pip install pip --upgrade
+pip install -r requirements.txt
+export FLASK_APP=application
+'''
+}
+}
+stage ('test') {
+steps {
+sh '''#!/bin/bash
+source test3/bin/activate
+py.test --verbose --junit-xml test-reports/results.xml
+'''
+}
+post{
+always {
+junit 'test-reports/results.xml'
+}
+}
+}
+stage ('Clean') {
+steps {
+sh '''#!/bin/bash
+if [[ $(ps aux | grep -i "gunicorn" | tr -s " " | head -n 1 | cut -d " " -f 2) != 0 ]]
+then
+ps aux | grep -i "gunicorn" | tr -s " " | head -n 1 | cut -d " " -f 2 > pid.txt
+kill $(cat pid.txt)
+exit 0
+fi
+'''
+}
+}
+stage ('Deploy') {
+steps {
+keepRunning {
+sh '''#!/bin/bash
+pip install -r requirements.txt
+pip install gunicorn
+python3 -m gunicorn -w 4 application:app -b 0.0.0.0 --daemon
+'''
+}
+}
+}
+}
+}`
+- Push changes to Github repository
+
 
 ## 🔧 Issues
 Explain how to run the automated tests for this system.
-
 ## System Diagram 
 
 ## 🎉 Optimization
