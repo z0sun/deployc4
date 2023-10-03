@@ -155,7 +155,11 @@ python3 -m gunicorn -w 4 application:app -b 0.0.0.0 --daemon
 
 ## 🔧 Issues
 Explain how to run the automated tests for this system.
+
 ## System Diagram 
+
+![Deployment 4 drawio](https://github.com/z0sun/deployc4/assets/135557197/df1ad781-4e03-4375-9143-d4210b0641a7)
+
 
 ## 🎉 Optimization
 - Hat tip to anyone whose code was used
