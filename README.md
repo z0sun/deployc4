@@ -154,11 +154,15 @@ python3 -m gunicorn -w 4 application:app -b 0.0.0.0 --daemon
 
 
 ## 🔧 Issues
-Explain how to run the automated tests for this system.
+No issues occurred during the Jenkins build, test, or deploy stages. However, each step of the deployment required multiple detailed steps or commands that must be followed sequentially and in their entirety to ensure setup is done correctly.
 
 ## System Diagram 
 
 ![Deployment 4 drawio](https://github.com/z0sun/deployc4/assets/135557197/df1ad781-4e03-4375-9143-d4210b0641a7)
 
 
-## 🎉 Optimization
+## 🎉 Observation/Optimization
+
+Initially, observations began by setting up a 20% CPU usage alarm in order to get an idea of CPU usage during idle periods vs. testing periods. The alarm was never triggered after multiple Jenkins builds as CPU usage did not exceed 7.5% on the initial build and slightly less usage for the following builds. This indicates an ability for the server to handle all current installs and tasks, as well as the initial build using more CPU for 
+
+I believe a t2.micro instance would still handle the deployment but I would expect a higher CPU utilization and a longer time period to complete the process as the t2.micro provides 1 CPU compared to the 2 CPUs provided in the t2.medium.
