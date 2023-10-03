@@ -1,56 +1,63 @@
-<p align="center">
-<img src="https://github.com/kura-labs-org/kuralabs_deployment_1/blob/main/Kuralogo.png">
-</p>
-<h1 align="center">C4_deployment-4Jo<h1> 
-
-Demonstrate your ability to deploy an application to an EC2 instance.
-
-- Create a separate GitHub repository for this application 
-
-- Download the files from this repository and upload them to your newly created repository 
-
-- Be sure to follow the deployment instructions from this repository  
-
-- Document your progress in a .md file in your repository. Also, document any issues you may run into and what you did to fix them.
-
-- Make sure your documentation includes these sections:
-  - Purpose
-  - Issues
-  - Steps
-  - System Diagram
-  - Optimization (How would make this deployment more efficient, if you utilize ChatGPT make sure to explain what your prompt was.)
-
-- Lastly, save your documentation and diagram into your repository. Submit your repository link to the LMS
-
-## Deployment instructions Link:
--  Link to instructions: https://github.com/kura-labs-org/c4_deployment-4/blob/main/Deployment-instructions.md
-
-
-
+# Deployment 4
 
 ## 🧐 Purpose 
-Write about 1-2 paragraphs describing the purpose of your project.
+This deployment is to build a web server to deploy a web application. Unlike previous deployments monitoring and stress testing are used to observe the performance of the web server.
+
+Nginx will be used as the web server (previous builds used AWS Elastic Beanstalk) with an AWS Cloudwatch setup for monitoring. 
 
 ### Prerequisites
-What things you need to install the software and how to install them.
+
 
 ```
-Give examples
+- `application.py` The main Python application file
+- `test_app.py` Tests used to test application functionality; used in Jenkins Test phase
+- `requirements.txt` Required packages for python application
+- `urls.json` Test URLs for application testing
+- `Jenkinsfile` Configuration file used by Jenkins to run a pipeline
+- `README.md` README documentation
+- `static/` Folder housing CSS files
+- `templates/` Folder housing HTML templates
+- `images/` Folder housing deployment artifacts
+
+(After EC2 is configured)
+Install "python3.10-venv"
+Install "python-pip"
+Install "python3-pip"
+Install ngnix
+Install "git-all"
 ```
 
 ### Steps
-A step by step series of examples that tell you how to get a development env running.
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
+Step 1. Configure VPC
 
 ```
-until finished
+Select "VPC and more"
+Select two Availability zones
+Select two public subnets
+Select two private subnets 
+```
+
+Step 2. Configure EC2
+
+```
+t.2 medium
+Attach to VPC
+configure security groups ports(22,80,8080,8000)
+```
+Step 3. Clone Repo
+
+```
+`mkdir "folder"`
+`git clone "URL Link" - Remote repo link to copy
+cd folder/`
+`cd .git`
+`nano config` - Paste your new repo link after "url ="
+``cd ..``
+`git config --global user.name "Your Name"`
+`git config --global user.email "[your@email.com](mailto:your@email.com)"`
+`git push`
+
 ```
 
 End with an example of getting some data out of the system or using it for a little demo.
@@ -58,6 +65,7 @@ End with an example of getting some data out of the system or using it for a lit
 ## 🔧 Issues
 Explain how to run the automated tests for this system.
 
+## System Diagram 
 
 ## 🎉 Optimization
 - Hat tip to anyone whose code was used
